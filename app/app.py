@@ -1,6 +1,33 @@
+
+# -------------
+# Import libraries
+# -------------
+
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
+
+import numpy as np
+import datetime as dt
+import os
+import re
+import seaborn as sns
+import datetime as dt
+from wordcloud import wordcloud
+import matplotlib.pyplot as plt
+
+from sklearn.feature_extraction.text import CountVectorizer
+import pyLDAvis
+import pyLDAvis.sklearn
+
+from transformers import pipeline
+
+
+from sklearn.decomposition import LatentDirichletAllocation
+
+## Switch off warning
+st.set_option('deprecation.showPyplotGlobalUse', False)
+
 
 # -------------
 # Import data
@@ -8,29 +35,55 @@ import pandas as pd
 
 df_twitter = pd.read_csv('streamlit_data.csv')
 
+## drop missing data
 
+df_twitter = df_twitter[df_twitter['date'].notnull()]
+
+## Convert date feature
+df_twitter['date'] = pd.to_datetime(df_twitter['date']).dt.date
 #Add sidebar to the app
-st.sidebar.markdown("### Select stuff")
-st.sidebar.markdown("blah blah")
+## Create sidebar for filtering regions
+st.sidebar.header("Date Filter")
 
+dates = st.sidebar.multiselect("Select dates of interest",
+options = df_twitter['date'].unique(),
+default = df_twitter['date'].unique())
+
+## Filter dataframe by selected dates
+
+df_twitter = df_twitter[df_twitter["date"].isin(dates)]
+ 
 #Add title and subtitle to the main interface of the app
 st.title("Our app name")
 
-# -------------- 
-# Word cloud
-# -------------- 
+# # -------------- 
+# # Word cloud
+# # -------------- 
+
+
 
 wcloud = st.container()
 with wcloud:
-    #Create three columns/filters
-    col1, col2 = st.columns(2)
+  #Create two columns/filters
+  #col1, col2 = st.columns(2)
     
-    with col1:
-        st.markdown("**word cloud**")
+  #with col1:
+  st.subheader("What's Trending")
+  st.markdown("The word cloud below displays words that appear most frequently in the trending tweets. The importance of words is shown with font size or color ")
+  all_words = ' '.join(twts for twts in df_twitter['cleaned_tweet'])
+
+  text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(all_words)
+
+  plt.figure(figsize=(10,8))
+  plt.title('All Tweets Wordcloud')
+  plt.imshow(text_cloud,interpolation='bilinear')
+  plt.axis('off')
+  plt.show()
+  st.pyplot()
     
-    with col2:
-        st.markdown("## Word Cloud")
-        st.markdown("Trendng topics on Twitter")
+    # with col2:
+    #     st.subheader("Wordcloud Description.")
+    #     st.markdown("This word cloud displays words that appear more frequently in the tweets. The importance of words is shown with font size or color ")
 
 # -------------- 
 # Senitiment analysis
