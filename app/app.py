@@ -1,5 +1,12 @@
 import streamlit as st
 import plotly.graph_objects as go
+import pandas as pd
+
+# -------------
+# Import data
+# -------------
+
+df_twitter = pd.read_csv('streamlit_data.csv')
 
 
 #Add sidebar to the app
