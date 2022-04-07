@@ -1,13 +1,16 @@
 import streamlit as st
-import plotly.graph_objects as go
 import pandas as pd
+
+import plotly.graph_objects as go
+import plotly.figure_factory as ff
 
 # -------------
 # Import data
 # -------------
 
-df_twitter = pd.read_csv('streamlit_data.csv')
-
+path = 'C:/Users/Amy/Desktop/DSI/Module3/'
+df_twitter = pd.read_csv(path+'streamlit_data.csv')
+print(df_twitter.info())
 
 #Add sidebar to the app
 st.sidebar.markdown("### Select stuff")
@@ -112,24 +115,34 @@ with sentiment:
     with col1:
         #st.markdown("### Polarity")
         
-        polarity_value = 0.3
+        polarity_value = df_twitter['polarity'].mean()
         st.plotly_chart(create_gauge_pol(polarity_value), use_container_width=True)
         
-        st.markdown("### Polarity distribution")
-        st.markdown("Some text")
-        st.markdown("graph")
+        
 
     with col2:
         #st.markdown("### Subjectivity")
         
-        subjectivity_value = 0.1
+        subjectivity_value =  df_twitter['subjectivity'].mean()
         st.plotly_chart(create_gauge_sub(subjectivity_value), use_container_width=True)
-        
-        
-        st.markdown("### Subjectivity distibution")
-        st.markdown("Some text")
-        st.markdown("graph")
-
+    
+    st.markdown("### Polarity distribution")
+    st.markdown("Some text")
+    fig = ff.create_distplot([df_twitter['polarity'].to_list()],
+                             ['Polarity'],
+                             show_rug=False,
+                             bin_size=.1
+                             )
+    st.plotly_chart(fig, use_container_width=True)
+    
+    st.markdown("### Subjectivity distibution")
+    st.markdown("Some text")
+    fig = ff.create_distplot([df_twitter['subjectivity'].to_list()],
+                             ['Subjectivity'],
+                             show_rug=False,
+                             bin_size=.05
+                             )
+    st.plotly_chart(fig, use_container_width=True)
 
 # -------------- 
 # Emotions
