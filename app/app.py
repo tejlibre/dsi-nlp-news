@@ -258,31 +258,39 @@ with sentiment:
 # Emotions
 # -------------- 
 
-
-st.markdown("## Distribution of emotions")
-emotions = st.container()
-with emotions:
-    #Create three columns/filters
-    col1, col2 = st.columns(2)
+clean_data_neutraless = df_twitter[df_twitter['emotion_label'] != 'neutral']
+descending_order = clean_data_neutraless['emotion_label'].value_counts().sort_values(ascending=False).index[:10]
     
-    with col1:
-        st.markdown("Graph")
-    with col2:
-        st.markdown("Some text")
-        
 
-st.markdown("## Positive and negative emotions")
 emotions = st.container()
-with emotions:
-    #Create three columns/filters
-    col1, col2 = st.columns(2)
+with emotions: 
+    st.markdown("## The top 10 Emotion")
+    st.markdown("Description ...")
     
-    with col1:
-        st.markdown("Some text")
-    with col2:
-        st.markdown("positive/negative buttons")
-        st.markdown("word cloud")
-        
+    fig = plt.figure(figsize=(10, 8))
+    sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
+    st.pyplot(fig)
+       
+
+emotion_cloud = st.container()
+with emotion_cloud:
+    #wordcloud plot
+    st.markdown("## Emotion wordcloud")
+    #drop down
+    data_neutraless = df_twitter[df_twitter["sentiment_class"] != "neutral"] #droping the neutral class
+    emotion = [st.selectbox( "Emotion", data_neutraless["sentiment_class"].unique())]  
+    #filtered data
+    df_emotion = data[data["sentiment_class"].isin(emotion)]
+    
+    all_words = ' '.join(twts for twts in df_emotion['cleaned_tweet'])
+
+    text_cloud = WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(all_words)
+
+    fig = plt.figure(figsize=(10,8))
+    plt.imshow(text_cloud,interpolation='bilinear')
+    plt.axis('off')
+    st.pyplot(fig)
+           
 # -------------- 
 # Topic modeling
 # -------------- 
