@@ -1,13 +1,15 @@
-
 # -------------
 # Import libraries
 # -------------
 
 import streamlit as st
+from streamlit import components
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import pandas as pd
 from PIL import Image
+
+
 
 
 import numpy as np
@@ -28,7 +30,21 @@ from transformers import pipeline
 
 from sklearn.decomposition import LatentDirichletAllocation
 
-## Switch off warning
+from random import randint
+from pickle import load
+import random
+
+from keras.models import load_model
+from keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+
+import keras
+from keras.models import Sequential
+from keras.layers import Dense,LSTM,Embedding
+from tensorflow.keras.utils import to_categorical
+from pickle import dump,load
+
+## Switch off warnings
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 
@@ -36,10 +52,12 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 # Import data
 # -------------
 
-path = "C:/Users/Amy/Desktop/DSI/Module3/"
-df_twitter = pd.read_csv(path+'streamlit_data.csv')
+#path = "C:/Users/Amy/Desktop/DSI/Module3/"
+#df_twitter = pd.read_csv(path+'streamlit_data.csv')
 
 ## drop missing data
+
+df_twitter = pd.read_csv('streamlit_data.csv')
 
 df_twitter = df_twitter[df_twitter['date'].notnull()]
 
@@ -194,7 +212,7 @@ with sentiment:
     
     fig.update(layout_showlegend=False)
     
-    arrow_green = Image.open(path+"arrow_green.png")
+    arrow_green = Image.open("arrow_green.png")
     fig.add_layout_image(
         dict(
             source=arrow_green,
@@ -209,7 +227,7 @@ with sentiment:
             layer="below")
     )
 
-    arrow_red = Image.open(path+"arrow_red.png")
+    arrow_red = Image.open("arrow_red.png")
     fig.add_layout_image(
         dict(
             source=arrow_red,
@@ -236,7 +254,7 @@ with sentiment:
                              bin_size=.05
                              )
     
-    arrow_red = Image.open(path+"arrow_red_flip.png")
+    arrow_red = Image.open("arrow_red_flip.png")
     fig.add_layout_image(
         dict(
             source=arrow_red,
@@ -288,33 +306,69 @@ with emotions:
 # -------------- 
         
 st.markdown("## Currently treading topics")
+
+
+number_of_topics = st.slider('Number of topics', min_value=1, max_value=5, value=3, step=1)
+## create vocabulary
+
+cv = CountVectorizer(max_df=0.9,min_df=5,stop_words='english')
+
+## Create Document term matrix
+dtm = cv.fit_transform(df_twitter['cleaned_tweet'])
+
+
+## Initialize number of topics
+rand_topics = number_of_topics
+
+## Create model instance
+LDA = LatentDirichletAllocation(n_components=rand_topics,random_state=42)
+
+## Fit model instance
+LDA.fit(dtm)
+
+
+## Attach topics to original dataset
+
+topic_results = LDA.transform(dtm)
+
+df_twitter['topic'] = topic_results.argmax(axis=1)
+
+
 topic_wcloud = st.container()
 with topic_wcloud:
-    #Create three columns/filters
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("Select topic")
-    with col2:
-        st.markdown("word cloud")
-        
-st.markdown("## Popular words by topic")
-topic_wcloud = st.container()
-with topic_wcloud:
-    #Create three columns/filters
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("### Topic 1")
-        st.markdown("Some text")
-    with col2:
-        st.markdown("### Topic 2")
-        st.markdown("Some text")
-          
+
+
+  word_count = 15
+
+  for i,topic in enumerate(LDA.components_):
+    st.write("The top  {word_count} word for topic # {i} are:".format(word_count=word_count,i=i))
+    st.write(str([cv.get_feature_names()[index] for index in topic.argsort()[-word_count:]]))
+    #st.write(print('\n'))
+    #st.write(print('\n'))
+
+  wordcloud_topic = st.selectbox("Topic for wordcloud",options=df_twitter['topic'].unique(),index=df_twitter['topic'].min())
+
+  topic_data = df_twitter[df_twitter['topic']==wordcloud_topic]
+
+  topic_words = ' '.join(twts for twts in topic_data['cleaned_tweet'])
+
+  text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(topic_words)
+
+  plt.figure(figsize=(10,8))
+  plt.title('Topic Wordcloud')
+  plt.imshow(text_cloud,interpolation='bilinear')
+  plt.axis('off')
+  plt.show()
+  st.pyplot()
+
+         
 st.markdown("## pyLDA visualisation")
 pyLDA_vis = st.container()
 with pyLDA_vis:
-    st.markdown("big plot")              
+      
+    html_string = pyLDAvis.prepared_data_to_html(pyLDAvis.sklearn.prepare(LDA, dtm, cv))
+
+    components.v1.html(html_string, width=1300, height=800, scrolling=True)           
 
 
 # -------------- 
@@ -324,14 +378,21 @@ with pyLDA_vis:
 st.markdown("## Text generation")
 textgen = st.container()
 with textgen:
-    #Create three columns/filters
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("### Enter key word(s)")
-        st.markdown("box")
-    with col2:
-        st.markdown("### Selcect text length")
-        st.markdown("slider")
-    
-    st.markdown("generated text")
+
+  ## Text box for user input (seed text)
+  user_input = st.text_area("Input Seed Text")
+
+  ## Slider to select number of words to be generated
+  article_min_word_count = st.slider('Article minimum word count', min_value=0, max_value=1000, value=200, step=50)
+  
+
+  if st.button('Generate text'):
+
+    ## Import generatot
+    generator = pipeline('text-generation', model='EleutherAI/gpt-neo-1.3B')
+
+    ## Generate text
+    text = generator(user_input, do_sample=True, min_length=article_min_word_count)
+
+    ## Print text
+    st.write(text[0]['generated_text'])
