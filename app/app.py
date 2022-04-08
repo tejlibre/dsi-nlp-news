@@ -207,7 +207,7 @@ with emotion_cloud:
     #wordcloud plot
     st.markdown("## Emotion wordcloud")
     #drop down
-    data_neutraless = data[data["sentiment_class"] != "neutral"] #droping the neutral class
+    data_neutraless = df_twitter[df_twitter["sentiment_class"] != "neutral"] #droping the neutral class
     emotion = [st.selectbox( "Emotion", data_neutraless["sentiment_class"].unique())]  
     #filtered data
     df_emotion = data[data["sentiment_class"].isin(emotion)]
