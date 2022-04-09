@@ -9,9 +9,6 @@ import plotly.figure_factory as ff
 import pandas as pd
 from PIL import Image
 
-
-
-
 import numpy as np
 import datetime as dt
 import os
@@ -26,7 +23,6 @@ import pyLDAvis
 import pyLDAvis.sklearn
 
 from transformers import pipeline
-
 
 from sklearn.decomposition import LatentDirichletAllocation
 
@@ -173,18 +169,18 @@ with sentiment:
         if polarity_value >= 0:
             if polarity_value > 0.5:
                 st.markdown('### Strong positive sentiment')
-                st.markdown('Tweets reflect an overall enthusiastic, happy or excited mood.')
+                st.markdown('On average tweets reflect an enthusiastic, happy or excited mood.')
             else:
                 st.markdown('### Weak positive sentiment')
-                st.markdown('Tweets reflect an overall slightly enthusiastic, happy or excited mood.')
+                st.markdown('On average tweets reflect a slightly enthusiastic, happy or excited mood.')
         else:
             if polarity_value < 0:
                 if polarity_value < -0.5:
                     st.markdown('### Strong negative sentiment')
-                    st.markdown('Tweets reflect an overall pessimistic, unfavorable or uphappy mood.')
+                    st.markdown('On average tweets reflect a pessimistic, unfavorable or uphappy mood.')
                 else:
                     st.markdown('### Weak negative sentiment')
-                    st.markdown('Tweets reflect an overall slightly pessimistic, unfavorable or uphappy mood.')
+                    st.markdown('On average tweets reflect a slightly pessimistic, unfavorable or uphappy mood.')
 
 
     with col2:
@@ -194,19 +190,19 @@ with sentiment:
         
         if subjectivity_value >= 0.25:
             if polarity_value > 0.75:
-                st.markdown('### Strong subjective')
-                st.markdown('Tweets are very subjective')
+                st.markdown('### Strongly subjective')
+                st.markdown('On average tweets are very subjective.')
             else:
-                st.markdown('### Weak subjectivity')
-                st.markdown('Tweets are somewhat subjetive.')
+                st.markdown('### Weakly subjective')
+                st.markdown('On average tweets are somewhat subjetive.')
         else:
             if subjectivity_value < 0.5:
                 if polarity_value < 0.25:
                     st.markdown('### Factual')
-                    st.markdown('Tweets are overall strongly factual.')
+                    st.markdown('On average tweets are strongly factual.')
                 else:
                     st.markdown('### Somewhat factual')
-                    st.markdown('Tweets are factual but include some subjectivity.')
+                    st.markdown('On average tweets are factual but include some subjectivity.')
          
         
     col1, col2 = st.columns(2)
