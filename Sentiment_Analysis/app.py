@@ -241,7 +241,7 @@ with polarity:
             source=arrow_green,
             xref="x",
             yref="y",
-            x=0.5,
+            x=0.35,
             y=3,
             sizex=1,
             sizey=1.5,
@@ -297,8 +297,22 @@ with subjectivity:
             layer="below")
     )
     
+    arrow_green = Image.open(path+"/arrow_green_flip.png")
+    fig.add_layout_image(
+        dict(
+            source=arrow_green,
+            xref="x",
+            yref="y",
+            x=0.1,
+            y=6,
+            sizex=3,
+            sizey=3,
+            sizing="contain",
+            opacity=0.5,
+            layer="below")
+    )
+    
     fig.update_layout(
-    #title="Plot Title",
     xaxis_title="Subjectivity",
     yaxis_title="Frequecy")
     fig.update(layout_showlegend=False)
@@ -312,12 +326,9 @@ with subjectivity:
 
 
 clean_data_neutraless = df_twitter[df_twitter['emotion_label'] != 'neutral']
-df_emotion = clean_data_neutraless['emotion_label'].value_counts().sort_values(ascending=False)
+df_emotion = clean_data_neutraless['emotion_label'].value_counts().sort_values()
 df_emotion = pd.DataFrame(df_emotion,columns=['emotion_label','count'])
 df_emotion.reset_index(inplace=True)
-
-descending_order = clean_data_neutraless['emotion_label'].value_counts().sort_values(ascending=False).index[:10]
-    
 
 emotions = st.container()
 with emotions: 
@@ -333,4 +344,5 @@ with emotions:
              orientation='h',
              labels={'emotion_label':'Count','index':'Emotions'}, height=400)
     fig.update(layout_coloraxis_showscale=False)
+    fig.update_xaxes(showgrid=False)
     st.plotly_chart(fig, use_container_width=True)
