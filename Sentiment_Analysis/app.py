@@ -6,6 +6,8 @@ import streamlit as st
 from streamlit import components
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
+import plotly.express as px
+
 import pandas as pd
 from PIL import Image
 
@@ -295,6 +297,10 @@ with sentiment:
 
 
 clean_data_neutraless = df_twitter[df_twitter['emotion_label'] != 'neutral']
+df_emotion = clean_data_neutraless['emotion_label'].value_counts().sort_values(ascending=False)
+df_emotion = pd.DataFrame(df_emotion,columns=['emotion_label','count'])
+df_emotion.reset_index(inplace=True)
+
 descending_order = clean_data_neutraless['emotion_label'].value_counts().sort_values(ascending=False).index[:10]
     
 
@@ -306,4 +312,10 @@ with emotions:
     fig = plt.figure(figsize=(10, 8))
     sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
     st.pyplot(fig)
+    
+    fig = px.bar(df_emotion.iloc[0:10], y='index', x='emotion_label',
+             hover_data=['index'], color='emotion_label',
+             orientation='h',
+             labels={'emotion_label':'Count','index':'Emotions'}, height=400)
        
+    st.plotly_chart(fig, use_container_width=True)
