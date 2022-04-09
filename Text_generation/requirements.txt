@@ -1,0 +1,15 @@
+streamlit
+plotly
+pandas
+PIL
+numpy
+seaborn
+wordcloud
+matplotlib
+sklearn
+pyLDAvis
+transformers
+
+keras
+tensorflow
+pickle
