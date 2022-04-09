@@ -125,7 +125,8 @@ with textgen:
   
 ## Add links to other pages/ features
 st.sidebar.write("For further analysis select:")
-st.sidebar.write("[Home Page](https://share.streamlit.io/chrisliti/dsi-nlp-news/dev/Text_generation/app2.py)")
+st.sidebar.write("[Home Page](https://share.streamlit.io/chrisliti/dsi-nlp-news/dev/Home_Page/app.py)")
 st.sidebar.write("[Sentiment Analysis](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
 st.sidebar.write("[Topic Modeling](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
+
 

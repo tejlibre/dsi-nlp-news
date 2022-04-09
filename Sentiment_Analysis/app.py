@@ -6,11 +6,10 @@ import streamlit as st
 from streamlit import components
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
+import plotly.express as px
+
 import pandas as pd
 from PIL import Image
-
-
-
 
 import numpy as np
 import datetime as dt
@@ -26,7 +25,6 @@ import pyLDAvis
 import pyLDAvis.sklearn
 
 from transformers import pipeline
-
 
 from sklearn.decomposition import LatentDirichletAllocation
 
@@ -173,18 +171,18 @@ with sentiment:
         if polarity_value >= 0:
             if polarity_value > 0.5:
                 st.markdown('### Strong positive sentiment')
-                st.markdown('Tweets reflect an overall enthusiastic, happy or excited mood.')
+                st.markdown('On average tweets reflect an enthusiastic, happy or excited mood.')
             else:
                 st.markdown('### Weak positive sentiment')
-                st.markdown('Tweets reflect an overall slightly enthusiastic, happy or excited mood.')
+                st.markdown('On average tweets reflect a slightly enthusiastic, happy or excited mood.')
         else:
             if polarity_value < 0:
                 if polarity_value < -0.5:
                     st.markdown('### Strong negative sentiment')
-                    st.markdown('Tweets reflect an overall pessimistic, unfavorable or uphappy mood.')
+                    st.markdown('On average tweets reflect a pessimistic, unfavorable or uphappy mood.')
                 else:
                     st.markdown('### Weak negative sentiment')
-                    st.markdown('Tweets reflect an overall slightly pessimistic, unfavorable or uphappy mood.')
+                    st.markdown('On average tweets reflect a slightly pessimistic, unfavorable or uphappy mood.')
 
 
     with col2:
@@ -194,19 +192,19 @@ with sentiment:
         
         if subjectivity_value >= 0.25:
             if polarity_value > 0.75:
-                st.markdown('### Strong subjective')
-                st.markdown('Tweets are very subjective')
+                st.markdown('### Strongly subjective')
+                st.markdown('On average tweets are very subjective.')
             else:
-                st.markdown('### Weak subjectivity')
-                st.markdown('Tweets are somewhat subjetive.')
+                st.markdown('### Weakly subjective')
+                st.markdown('On average tweets are somewhat subjetive.')
         else:
             if subjectivity_value < 0.5:
                 if polarity_value < 0.25:
                     st.markdown('### Factual')
-                    st.markdown('Tweets are overall strongly factual.')
+                    st.markdown('On average tweets are strongly factual.')
                 else:
                     st.markdown('### Somewhat factual')
-                    st.markdown('Tweets are factual but include some subjectivity.')
+                    st.markdown('On average tweets are factual but include some subjectivity.')
          
         
     col1, col2 = st.columns(2)
@@ -314,15 +312,25 @@ with subjectivity:
 
 
 clean_data_neutraless = df_twitter[df_twitter['emotion_label'] != 'neutral']
+df_emotion = clean_data_neutraless['emotion_label'].value_counts().sort_values(ascending=False)
+df_emotion = pd.DataFrame(df_emotion,columns=['emotion_label','count'])
+df_emotion.reset_index(inplace=True)
+
 descending_order = clean_data_neutraless['emotion_label'].value_counts().sort_values(ascending=False).index[:10]
     
 
 emotions = st.container()
 with emotions: 
     st.markdown("## The top 10 Emotion")
-    st.markdown("Description ...")
+    st.markdown("This bar graph shows the top 10 most common emotions detected in the tweets from the chosen date range.")
     
-    fig = plt.figure(figsize=(10, 8))
-    sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
-    st.pyplot(fig)
-       
+    #fig = plt.figure(figsize=(10, 8))
+    #sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
+    #st.pyplot(fig)
+    
+    fig = px.bar(df_emotion.iloc[0:10], y='index', x='emotion_label',
+             hover_data=['index'], color='emotion_label',
+             orientation='h',
+             labels={'emotion_label':'Count','index':'Emotions'}, height=400)
+    fig.update(layout_coloraxis_showscale=False)
+    st.plotly_chart(fig, use_container_width=True)
