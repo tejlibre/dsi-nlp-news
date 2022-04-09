@@ -216,8 +216,14 @@ with sentiment:
     with col2:           
         st.plotly_chart(create_gauge_sub(subjectivity_value), use_container_width=True)
     
-    st.markdown("### Polarity distribution")
-    st.markdown("The figure below shows the distribution of tweets across the polarity spectrum. ")
+      
+st.markdown("### Polarity distribution")
+st.markdown("The figure below shows the distribution of tweets across the polarity spectrum. ")
+with st.expander("See explanation"):
+    st.markdown("Polarity is a number between -1 and 1. A sentiment becomes more negative as the polarity moves from 0 to -1 with -1 corresponding to a highly negative sentiment. The sentiment decomes more positive as the polarity moves from 0 towords +1 with +1 corresponding to a highly positive sentiment. ")
+    
+polarity = st.container()
+with polarity:
     fig = ff.create_distplot([df_twitter['polarity'].to_list()],
                              ['Polarity'],
                              show_rug=False,
@@ -225,6 +231,8 @@ with sentiment:
                              )
     
     fig.update(layout_showlegend=False)
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(showgrid=False)
     fig.update_layout(
     xaxis_title="Polarity",
     yaxis_title="Frequecy")
@@ -263,8 +271,13 @@ with sentiment:
     
     
     
-    st.markdown("### Subjectivity distibution")
-    st.markdown("The figure below shows the distribution of tweets across the subjectivity spectrum. ")
+st.markdown("### Subjectivity distibution")
+st.markdown("The figure below shows the distribution of tweets across the subjectivity spectrum. ")
+with st.expander("See explanation"):
+    st.markdown("With the subjectivity measure, 0 corresponds to highly factual statements i.e a sentiment is more objective, while highly emotional texts are scored with +1 which means the sentiment is more subjective based on the individual emotions.")
+    
+subjectivity = st.container()
+with subjectivity:
     fig = ff.create_distplot([df_twitter['subjectivity'].to_list()],
                              ['Subjectivity'],
                              show_rug=False,
@@ -291,6 +304,8 @@ with sentiment:
     xaxis_title="Subjectivity",
     yaxis_title="Frequecy")
     fig.update(layout_showlegend=False)
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(showgrid=False)
     st.plotly_chart(fig, use_container_width=True)
 
 # -------------- 
