@@ -307,15 +307,15 @@ descending_order = clean_data_neutraless['emotion_label'].value_counts().sort_va
 emotions = st.container()
 with emotions: 
     st.markdown("## The top 10 Emotion")
-    st.markdown("Description ...")
+    st.markdown("This bar graph shows the top 10 most common emotions detected in the tweets from the chosen date range.")
     
-    fig = plt.figure(figsize=(10, 8))
-    sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
-    st.pyplot(fig)
+    #fig = plt.figure(figsize=(10, 8))
+    #sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
+    #st.pyplot(fig)
     
     fig = px.bar(df_emotion.iloc[0:10], y='index', x='emotion_label',
              hover_data=['index'], color='emotion_label',
              orientation='h',
              labels={'emotion_label':'Count','index':'Emotions'}, height=400)
-       
+    fig.update(layout_coloraxis_showscale=False)
     st.plotly_chart(fig, use_container_width=True)
