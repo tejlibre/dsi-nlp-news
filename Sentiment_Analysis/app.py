@@ -184,6 +184,9 @@ with sentiment:
                              )
     
     fig.update(layout_showlegend=False)
+    fig.update_layout(
+    xaxis_title="Polarity",
+    yaxis_title="Frequecy")
     
     arrow_green = Image.open(path+"/arrow_green.png")
     fig.add_layout_image(
@@ -242,6 +245,10 @@ with sentiment:
             layer="below")
     )
     
+    fig.update_layout(
+    #title="Plot Title",
+    xaxis_title="Subjectivity",
+    yaxis_title="Frequecy")
     fig.update(layout_showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
 
