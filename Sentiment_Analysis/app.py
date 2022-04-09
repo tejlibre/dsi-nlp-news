@@ -80,45 +80,15 @@ df_twitter = df_twitter[df_twitter["date"].isin(dates)]
 #Add title and subtitle to the main interface of the app
 st.title("Our app name")
 
-# # -------------- 
-# # Word cloud
-# # -------------- 
-
-
-
-wcloud = st.container()
-with wcloud:
-  #Create two columns/filters
-  #col1, col2 = st.columns(2)
-    
-  #with col1:
-  st.subheader("What's Trending")
-  st.markdown("The word cloud below displays words that appear most frequently in the trending tweets. The importance of words is shown with font size or color ")
-  all_words = ' '.join(twts for twts in df_twitter['cleaned_tweet'])
-
-  text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(all_words)
-
-  plt.figure(figsize=(10,8))
-  plt.title('All Tweets Wordcloud')
-  plt.imshow(text_cloud,interpolation='bilinear')
-  plt.axis('off')
-  plt.show()
-  st.pyplot()
-    
-    # with col2:
-    #     st.subheader("Wordcloud Description.")
-    #     st.markdown("This word cloud displays words that appear more frequently in the tweets. The importance of words is shown with font size or color ")
-
 # -------------- 
 # Senitiment analysis
 # -------------- 
 
 def create_gauge_pol(value,title="Average Polarity"):
-    
     fig = go.Figure(
         go.Indicator(
             mode = "gauge+number",
-            value = value,
+            value = np.round(value*100)/100,
             domain = {'x': [0, 1], 'y': [0, 1]},
             title = {'text': title, 'font': {'size': 24}},
             gauge = {
@@ -136,6 +106,7 @@ def create_gauge_pol(value,title="Average Polarity"):
                     'thickness': 0.75,
                     'value': value}}
             ),
+        
         go.Layout(margin=go.layout.Margin(
                                 l=20, #left margin
                                 r=20, #right margin
@@ -292,130 +263,3 @@ with emotions:
     sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
     st.pyplot(fig)
        
-
-emotion_cloud = st.container()
-with emotion_cloud:
-    #wordcloud plot
-    st.markdown("## Emotion wordcloud")
-    #drop down
-    data_neutraless = df_twitter[df_twitter["sentiment_class"] != "neutral"] #droping the neutral class
-    emotion = [st.selectbox( "Emotion", data_neutraless["sentiment_class"].unique())]  
-    #filtered data
-    df_emotion = data_neutraless[data_neutraless["sentiment_class"].isin(emotion)]
-    
-    all_words = ' '.join(twts for twts in df_emotion['cleaned_tweet'])
-
-    text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(all_words)
-
-    fig = plt.figure(figsize=(10,8))
-    plt.imshow(text_cloud,interpolation='bilinear')
-    plt.axis('off')
-    st.pyplot(fig)
-        
-# -------------- 
-# Topic modeling
-# -------------- 
-        
-st.markdown("## Currently treading topics")
-
-
-number_of_topics = st.slider('Number of topics', min_value=1, max_value=5, value=3, step=1)
-## create vocabulary
-
-cv = CountVectorizer(max_df=0.9,min_df=5,stop_words='english')
-
-## Create Document term matrix
-dtm = cv.fit_transform(df_twitter['cleaned_tweet'])
-
-
-## Initialize number of topics
-rand_topics = number_of_topics
-
-## Create model instance
-LDA = LatentDirichletAllocation(n_components=rand_topics,random_state=42)
-
-## Fit model instance
-LDA.fit(dtm)
-
-
-## Attach topics to original dataset
-
-topic_results = LDA.transform(dtm)
-
-df_twitter['topic'] = topic_results.argmax(axis=1)
-
-
-topic_wcloud = st.container()
-with topic_wcloud:
-
-  st.markdown("### Word Frequency by Topics")
-
-  st.write("The lists below display the top 15 words for each topic modeled. The lists of words are utilized to label the discovered topics.")
-
-
-  word_count = 15
-
-  for i,topic in enumerate(LDA.components_):
-    st.write("The top  {word_count} word for topic # {i} are:".format(word_count=word_count,i=i))
-    st.write(" ")
-    st.write(str([cv.get_feature_names()[index] for index in topic.argsort()[-word_count:]]))
-    #st.write(print('\n'))
-    #st.write(print('\n'))
-  
-  st.markdown("### Topic Word Cloud")
-  st.write('Select topic from drop down menu below to visualize the most frequent words for the selected topic.')
-  wordcloud_topic = st.selectbox("Topic for wordcloud",options=df_twitter['topic'].unique(),index=df_twitter['topic'].min())
-
-  topic_data = df_twitter[df_twitter['topic']==wordcloud_topic]
-
-  topic_words = ' '.join(twts for twts in topic_data['cleaned_tweet'])
-
-  text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(topic_words)
-
-  plt.figure(figsize=(10,8))
-  plt.title('Topic Wordcloud')
-  plt.imshow(text_cloud,interpolation='bilinear')
-  plt.axis('off')
-  plt.show()
-  st.pyplot()
-
-         
-st.markdown("## pyLDA visualisation")
-pyLDA_vis = st.container()
-with pyLDA_vis:
-
-    st.write("The interactive visualization below helps in interprating the topics discovered by the model fit on the trending tweets data. Click on a topic to visualize the topics word composition and distribution.")
-      
-    html_string = pyLDAvis.prepared_data_to_html(pyLDAvis.sklearn.prepare(LDA, dtm, cv))
-
-    components.v1.html(html_string, width=1300, height=800, scrolling=True)           
-
-
-# -------------- 
-# Text generation
-# -------------- 
-
-st.markdown("## Text generation")
-textgen = st.container()
-with textgen:
-
-  st.write("The section below uses transformers (deep learning models) to generate text for a specified topic of interest. Based on the discovered topics from the topic model, input seed text in the text box below to auto-generate an article.")
-
-  ## Text box for user input (seed text)
-  user_input = st.text_input("Input Seed Text","Trending topic")
-
-  ## Slider to select number of words to be generated
-  st.write("Select minimum word count on slider below.")
-  article_min_word_count = st.slider('Article minimum word count', min_value=0, max_value=1000, value=200, step=50)
-  
-
-  if st.button('Generate text'):
-
-    ## Import generatot
-    generator = pipeline('text-generation', model='gpt2')
-
-    ## Generate text
-    text = generator(user_input, do_sample=True, min_length=article_min_word_count)
-
-    ## Print text
-    st.write(text[0]['generated_text'])
