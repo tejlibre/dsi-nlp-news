@@ -1,3 +1,4 @@
+
 # -------------
 # Import libraries
 # -------------
@@ -81,7 +82,7 @@ df_twitter = df_twitter[df_twitter["date"].isin(dates)]
 st.sidebar.write("For further analysis select:")
 st.sidebar.write("[Sentiment Analysis](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
 st.sidebar.write("[Topic Modeling](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
-st.sidebar.write("[Text Generation](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
+st.sidebar.write("[Text Generation](https://share.streamlit.io/chrisliti/dsi-nlp-news/dev/Text_generation/app3.py)")
 
  
 #Add title and subtitle to the main interface of the app
@@ -114,8 +115,5 @@ with wcloud:
   For more analysis select from the side bar options or click on the links below:
   - [Sentiment Analysis](https://share.streamlit.io/chrisliti/module3/main/app/app.py)
   - [Topic Modeling](https://share.streamlit.io/chrisliti/module3/main/app/app.py)
-  - [Text Generation](https://share.streamlit.io/chrisliti/module3/main/app/app.py)
+  - [Text Generation](https://share.streamlit.io/chrisliti/dsi-nlp-news/dev/Text_generation/app3.py)
   """)
-
-    
-  

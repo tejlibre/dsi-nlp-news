@@ -88,7 +88,8 @@ def create_gauge_pol(value,title="Average Polarity"):
     fig = go.Figure(
         go.Indicator(
             mode = "gauge+number",
-            value = np.round(value*100)/100,
+            value = value,
+            number = {'valueformat':'.2f'},
             domain = {'x': [0, 1], 'y': [0, 1]},
             title = {'text': title, 'font': {'size': 24}},
             gauge = {
@@ -116,6 +117,7 @@ def create_gauge_pol(value,title="Average Polarity"):
             )
         )
     
+
     fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'color': "white", 'family': "Arial"})
     return fig
 
@@ -123,7 +125,8 @@ def create_gauge_sub(value, title="Average Subjectivity"):
     fig = go.Figure(
         go.Indicator(
             mode = "gauge+number",
-            value = np.round(value*100)/100,
+            value = value,
+            number = {'valueformat':'.2f'},
             domain = {'x': [0, 1], 'y': [0, 1]},
             title = {'text': title, 'font': {'size': 24}},
             gauge = {
@@ -154,8 +157,9 @@ def create_gauge_sub(value, title="Average Subjectivity"):
     return fig
 
 st.markdown("## Sentiment analysis")
-st.markdown("The sentiment of a text can be either negative, neutral or positive. A measure of this is polarity. Polarity is a number between -1 and 1, where -1 corresponds to a highly negative sentiment, while +1 corresponds to a highly positive sentiment. ")
-st.markdown("Subjectivity is judgment based on individual personal impressions and feelings and opinions rather than external facts. Here we also measure the subjectivity with 0 corresponding to highly factual statements, while highly emotional texts are scored with +1.")
+with st.expander("See explanation"):
+    st.markdown("The sentiment of a text can be either negative, neutral or positive. A measure of this is polarity. Polarity is a number between -1 and 1, where -1 corresponds to a highly negative sentiment, while +1 corresponds to a highly positive sentiment. ")
+    st.markdown("Subjectivity is judgment based on individual personal impressions and feelings and opinions rather than external facts. Here we also measure the subjectivity with 0 corresponding to highly factual statements, while highly emotional texts are scored with +1.")
 sentiment = st.container()
 with sentiment:
     #Create three columns/filters
@@ -165,14 +169,51 @@ with sentiment:
         #st.markdown("### Polarity")
         
         polarity_value = df_twitter['polarity'].mean()
-        st.plotly_chart(create_gauge_pol(polarity_value), use_container_width=True)
         
-        
+        if polarity_value >= 0:
+            if polarity_value > 0.5:
+                st.markdown('### Strong positive sentiment')
+                st.markdown('Tweets reflect an overall enthusiastic, happy or excited mood.')
+            else:
+                st.markdown('### Weak positive sentiment')
+                st.markdown('Tweets reflect an overall slightly enthusiastic, happy or excited mood.')
+        else:
+            if polarity_value < 0:
+                if polarity_value < -0.5:
+                    st.markdown('### Strong negative sentiment')
+                    st.markdown('Tweets reflect an overall pessimistic, unfavorable or uphappy mood.')
+                else:
+                    st.markdown('### Weak negative sentiment')
+                    st.markdown('Tweets reflect an overall slightly pessimistic, unfavorable or uphappy mood.')
+
 
     with col2:
         #st.markdown("### Subjectivity")
         
         subjectivity_value =  df_twitter['subjectivity'].mean()
+        
+        if subjectivity_value >= 0.25:
+            if polarity_value > 0.75:
+                st.markdown('### Strong subjective')
+                st.markdown('Tweets are very subjective')
+            else:
+                st.markdown('### Weak subjectivity')
+                st.markdown('Tweets are somewhat subjetive.')
+        else:
+            if subjectivity_value < 0.5:
+                if polarity_value < 0.25:
+                    st.markdown('### Factual')
+                    st.markdown('Tweets are overall strongly factual.')
+                else:
+                    st.markdown('### Somewhat factual')
+                    st.markdown('Tweets are factual but include some subjectivity.')
+         
+        
+    col1, col2 = st.columns(2)
+    with col1:   
+        st.plotly_chart(create_gauge_pol(polarity_value), use_container_width=True)
+        
+    with col2:           
         st.plotly_chart(create_gauge_sub(subjectivity_value), use_container_width=True)
     
     st.markdown("### Polarity distribution")
