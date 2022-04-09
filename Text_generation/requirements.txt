@@ -1,7 +1,6 @@
 streamlit
 plotly
 pandas
-PIL
 numpy
 seaborn
 wordcloud
@@ -9,8 +8,7 @@ matplotlib
 sklearn
 pyLDAvis
 transformers
-seaborn
 
 keras
 tensorflow
-pickle
+
