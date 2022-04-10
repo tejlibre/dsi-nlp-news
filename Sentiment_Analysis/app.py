@@ -64,11 +64,11 @@ def create_gauge_pol(value,title="Average Polarity"):
         go.Indicator(
             mode = "gauge+number",
             value = value,
-            number = {'valueformat':'.2f'},
+            number = {'valueformat':'.2f', 'font' : {'color' : 'blue'}},
             domain = {'x': [0, 1], 'y': [0, 1]},
-            title = {'text': title, 'font': {'size': 24}},
+            title = {'text': title, 'font': {'size': 24, 'color': 'blue'}},
             gauge = {
-                'axis': {'range': [-1,1], 'tickwidth': 1, 'tickcolor': "white"},
+                'axis': {'range': [-1,1], 'tickwidth': 1, 'tickcolor': "lightblue"},
                 'bar': {'color': "darkblue"},
                 'bgcolor': "white",
                 'borderwidth': 2,
@@ -93,7 +93,7 @@ def create_gauge_pol(value,title="Average Polarity"):
         )
     
 
-    fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'color': "white", 'family': "Arial"})
+    fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'color': "blue", 'family': "Arial"})
     return fig
 
 def create_gauge_sub(value, title="Average Subjectivity"):
@@ -101,11 +101,11 @@ def create_gauge_sub(value, title="Average Subjectivity"):
         go.Indicator(
             mode = "gauge+number",
             value = value,
-            number = {'valueformat':'.2f'},
+            number = {'valueformat':'.2f',  'font': {'color': 'blue'}},
             domain = {'x': [0, 1], 'y': [0, 1]},
-            title = {'text': title, 'font': {'size': 24}},
+            title = {'text': title, 'font': {'size': 24, 'color': 'blue'}},
             gauge = {
-                'axis': {'range': [0,1], 'tickwidth': 1, 'tickcolor': "white"},
+                'axis': {'range': [0,1], 'tickwidth': 1, 'tickcolor': "lightblue"},
                 'bar': {'color': "darkblue"},
                 'bgcolor': "white",
                 'borderwidth': 2,
@@ -127,7 +127,7 @@ def create_gauge_sub(value, title="Average Subjectivity"):
                 )
             )
     
-    fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'color': "white", 'family': "Arial"})
+    fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'color': "blue", 'family': "Arial"})
     
     return fig
 
