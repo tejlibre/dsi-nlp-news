@@ -81,7 +81,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 # st.sidebar.write("For further analysis select:")
 # st.sidebar.write("[Home Page](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
 # st.sidebar.write("[Sentiment Analysis](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
-# st.sidebar.write("[Topic Modeling](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
+# st.sidebar.write("[Discover Topics](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
 
 
  
