@@ -78,7 +78,8 @@ default = df_twitter['date'].unique())
 df_twitter = df_twitter[df_twitter["date"].isin(dates)]
  
 #Add title and subtitle to the main interface of the app
-st.title("Scoop finder")
+
+st.title("Scoop Finder")
 
 
 # -------------- 
