@@ -84,7 +84,7 @@ st.sidebar.write("[Sentiment Analysis](https://share.streamlit.io/tejlibre/dsi-n
 st.sidebar.write("[Emotions WordCloud](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Emotion_Cloud/app.py)")
 st.sidebar.write("[Topic Model Visualization](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Modeling_Visualization/app.py)")
 st.sidebar.write("[Topic WordCloud](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Cloud/app.py)")
-st.sidebar.write("[Text Generation](https://share.streamlit.io/chrisliti/dsi-nlp-news/dev/Text_generation/app.py)")
+st.sidebar.write("[Text Generation](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Text_generation/app.py)")
 
 
  
