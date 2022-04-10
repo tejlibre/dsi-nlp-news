@@ -307,6 +307,9 @@ df_emotion = clean_data_neutraless['emotion_label'].value_counts().sort_values()
 df_emotion = pd.DataFrame(df_emotion,columns=['emotion_label','count'])
 df_emotion.reset_index(inplace=True)
 
+df_descriptions = pd.read_csv(path+'/emotions.txt', sep=';')
+df_new = pd.merge(df_emotion, df_descriptions, on ='index', how ="outer")
+
 emotions = st.container()
 with emotions: 
     st.markdown("## The top 10 Emotion")
@@ -316,10 +319,10 @@ with emotions:
     #sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
     #st.pyplot(fig)
     
-    fig = px.bar(df_emotion.iloc[0:10], y='index', x='emotion_label',
-             hover_data=['index'], color='emotion_label',
+    fig = px.bar(df_new.iloc[0:10], y='index', x='emotion_label',
+             hover_data=['description'], color='emotion_label',
              orientation='h',
-             labels={'emotion_label':'Count','index':'Emotions'}, height=400)
+             labels={'emotion_label':'Count','index':'Emotions','description':'Description'}, height=400)
     fig.update(layout_coloraxis_showscale=False)
     fig.update_xaxes(showgrid=False)
     st.plotly_chart(fig, use_container_width=True)
