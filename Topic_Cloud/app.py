@@ -3,46 +3,19 @@
 # -------------
 
 import streamlit as st
-from streamlit import components
-import plotly.graph_objects as go
-import plotly.figure_factory as ff
 import pandas as pd
-from PIL import Image
 
 
 
 
-import numpy as np
-import datetime as dt
 import os
-import re
-import seaborn as sns
-import datetime as dt
 from wordcloud import wordcloud
 import matplotlib.pyplot as plt
 
 from sklearn.feature_extraction.text import CountVectorizer
-import pyLDAvis
-import pyLDAvis.sklearn
-
-from transformers import pipeline
-
 
 from sklearn.decomposition import LatentDirichletAllocation
 
-from random import randint
-from pickle import load
-import random
-
-from keras.models import load_model
-from keras.preprocessing.sequence import pad_sequences
-from keras.preprocessing.text import Tokenizer
-
-import keras
-from keras.models import Sequential
-from keras.layers import Dense,LSTM,Embedding
-from tensorflow.keras.utils import to_categorical
-from pickle import dump,load
 
 ## Switch off warnings
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -154,5 +127,5 @@ with topic_wcloud:
     plt.title('Topic Wordcloud')
     plt.imshow(text_cloud,interpolation='bilinear')
     plt.axis('off')
-    plt.show()
+    #plt.show()
     st.pyplot()
