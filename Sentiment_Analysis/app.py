@@ -3,7 +3,6 @@
 # -------------
 
 import streamlit as st
-from streamlit import components
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import plotly.express as px
@@ -11,13 +10,7 @@ import plotly.express as px
 import pandas as pd
 from PIL import Image
 
-import numpy as np
-import datetime as dt
 import os
-import re
-import datetime as dt
-from wordcloud import wordcloud
-import matplotlib.pyplot as plt
 
 ## Switch off warnings
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -210,6 +203,7 @@ polarity = st.container()
 with polarity:
     fig = ff.create_distplot([df_twitter['polarity'].to_list()],
                              ['Polarity'],
+                             colors=['white'],
                              show_rug=False,
                              bin_size=.1
                              )
@@ -264,6 +258,7 @@ subjectivity = st.container()
 with subjectivity:
     fig = ff.create_distplot([df_twitter['subjectivity'].to_list()],
                              ['Subjectivity'],
+                             colors=['white'],
                              show_rug=False,
                              bin_size=.05
                              )
