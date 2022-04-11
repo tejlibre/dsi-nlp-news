@@ -203,7 +203,7 @@ polarity = st.container()
 with polarity:
     fig = ff.create_distplot([df_twitter['polarity'].to_list()],
                              ['Polarity'],
-                             colors=['white'],
+                             #colors=['white'],
                              show_rug=False,
                              bin_size=.1
                              )
@@ -258,7 +258,7 @@ subjectivity = st.container()
 with subjectivity:
     fig = ff.create_distplot([df_twitter['subjectivity'].to_list()],
                              ['Subjectivity'],
-                             colors=['white'],
+                             #colors=['white'],
                              show_rug=False,
                              bin_size=.05
                              )
