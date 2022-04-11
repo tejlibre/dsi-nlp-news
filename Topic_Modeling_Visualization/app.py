@@ -25,24 +25,29 @@ from sklearn.feature_extraction.text import CountVectorizer
 import pyLDAvis
 import pyLDAvis.sklearn
 
-#from transformers import pipeline
+from transformers import pipeline
 
 
 from sklearn.decomposition import LatentDirichletAllocation
 
-#from random import randint
-#from pickle import load
-#import random
+from random import randint
+from pickle import load
+import random
 
-#from keras.models import load_model
-#from keras.preprocessing.sequence import pad_sequences
-#from keras.preprocessing.text import Tokenizer
+from keras.models import load_model
+from keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
 
-#import keras
-#from keras.models import Sequential
-#from keras.layers import Dense,LSTM,Embedding
-#from tensorflow.keras.utils import to_categorical
-#from pickle import dump,load
+import keras
+from keras.models import Sequential
+from keras.layers import Dense,LSTM,Embedding
+from tensorflow.keras.utils import to_categorical
+from pickle import dump,load
+
+## Switch off warnings
+st.set_option('deprecation.showPyplotGlobalUse', False)
+
+
 # -------------
 # Import data
 # -------------
@@ -97,9 +102,7 @@ st.write('Click on the Fit Model button below to fit a LDA model to the tweets d
 
 
 if st.button('Fit Model'):
- 
   with st.spinner("Fitting Model"):
-    
     ## create vocabulary
 
     cv = CountVectorizer(max_df=0.9,min_df=5,stop_words='english')
@@ -127,5 +130,3 @@ if st.button('Fit Model'):
         html_string = pyLDAvis.prepared_data_to_html(pyLDAvis.sklearn.prepare(LDA, dtm, cv))
         
         components.v1.html(html_string, width=1300, height=1000,  scrolling=True)      
-        
-
