@@ -107,7 +107,7 @@ with textgen:
 
   ## Slider to select number of words to be generated
   st.write("Select minimum word count on slider below.")
-  article_min_word_count = st.slider('Article minimum word count', min_value=0, max_value=1000, value=200, step=50)
+  article_min_word_count = st.slider('Article minimum character count', min_value=0, max_value=1000, value=200, step=50)
   
 
   if st.button('Generate text'):
