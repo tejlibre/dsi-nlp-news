@@ -106,7 +106,7 @@ with textgen:
   user_input = st.text_input("Type seed text to be fed to model below.","Input seed text")
 
   ## Slider to select number of words to be generated
-  st.write("Select minimum word count on slider below.")
+  st.write("Select minimum character count on slider below.")
   article_min_word_count = st.slider('Article minimum character count', min_value=0, max_value=1000, value=200, step=50)
   
 
