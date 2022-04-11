@@ -115,7 +115,7 @@ with topic_wcloud:
     
     st.markdown("### Topic Word Cloud")
     st.write('Select topic from drop down menu below to visualize the most frequent words for the selected topic.')
-    wordcloud_topic = st.selectbox("Topic for wordcloud",options=sorted(df_twitter['topic'].unique()),index=df_twitter['topic'].min())
+    wordcloud_topic = st.selectbox("Topic for wordcloud",options=sorted(df_twitter['topic'].unique()))#,index=df_twitter['topic'].min()
   
     topic_data = df_twitter[df_twitter['topic']==wordcloud_topic]
   
