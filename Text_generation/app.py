@@ -77,11 +77,14 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # df_twitter = df_twitter[df_twitter["date"].isin(dates)]
 
-# ## Add links to other pages/ features
-# st.sidebar.write("For further analysis select:")
-# st.sidebar.write("[Home Page](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
-# st.sidebar.write("[Sentiment Analysis](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
-# st.sidebar.write("[Discover Topics](https://share.streamlit.io/chrisliti/module3/main/app/app.py)")
+## Add side menu
+## Add links to other pages/ features
+st.sidebar.write("Additional Features:")
+st.sidebar.write("[Home Page](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Home_Page/app.py)")
+st.sidebar.write("[Sentiment Analysis](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Sentiment_Analysis/app.py)")
+st.sidebar.write("[Emotions WordCloud](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Emotion_Cloud/app.py)")
+st.sidebar.write("[Topic Model Visualization](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Modeling_Visualization/app.py)")
+st.sidebar.write("[Topic WordCloud](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Cloud/app.py)")
 
 
  
