@@ -101,7 +101,7 @@ number_of_topics = st.slider('Number of topics', min_value=1, max_value=5, value
 st.write('Click on the Fit Model button below to fit a LDA model to the tweets data and visualize the topics.')
 
 
-if st.button('Fit Model'):
+if st.button('Fit Topic Model'):
   with st.spinner("Fitting Model"):
     ## create vocabulary
 
