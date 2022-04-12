@@ -34,7 +34,7 @@ df_twitter = pd.read_csv(path+'/streamlit_data.csv')
 
 ## drop missing data
 
-#df_twitter = df_twitter[df_twitter['date'].notnull()]
+df_twitter = df_twitter[df_twitter['date'].notnull()]
 
 ## Convert date feature
 df_twitter['date'] = pd.to_datetime(df_twitter['date']).dt.date
