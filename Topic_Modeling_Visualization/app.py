@@ -61,7 +61,7 @@ df_twitter = pd.read_csv(path+'/streamlit_data.csv')
 
 ## drop missing data
 
-df_twitter = df_twitter[df_twitter['date'].notnull()]
+#df_twitter = df_twitter[df_twitter['date'].notnull()]
 
 ## Convert date feature
 df_twitter['date'] = pd.to_datetime(df_twitter['date']).dt.date
@@ -108,7 +108,7 @@ if st.button('Fit Topic Model'):
     cv = CountVectorizer(max_df=0.9,min_df=5,stop_words='english')
 
     ## Create Document term matrix
-    dtm = cv.fit_transform(df_twitter['cleaned_tweet'])
+    dtm = cv.fit_transform(df_twitter['cleaned_tweet'].apply(lambda x: np.str_(x)))
 
 
     ## Initialize number of topics
