@@ -4,6 +4,7 @@
 
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 
 
@@ -76,7 +77,7 @@ number_of_topics = st.slider('Number of topics', min_value=1, max_value=5, value
 cv = CountVectorizer(max_df=0.9,min_df=5,stop_words='english')
 
 ## Create Document term matrix
-dtm = cv.fit_transform(df_twitter['cleaned_tweet'])
+dtm = cv.fit_transform(df_twitter['cleaned_tweet'].apply(lambda x: np.str_(x)))
 
 
 ## Initialize number of topics
