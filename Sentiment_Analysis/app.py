@@ -3,46 +3,14 @@
 # -------------
 
 import streamlit as st
-from streamlit import components
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
+import plotly.express as px
+
 import pandas as pd
 from PIL import Image
 
-
-
-
-import numpy as np
-import datetime as dt
 import os
-import re
-import seaborn as sns
-import datetime as dt
-from wordcloud import wordcloud
-import matplotlib.pyplot as plt
-
-from sklearn.feature_extraction.text import CountVectorizer
-import pyLDAvis
-import pyLDAvis.sklearn
-
-from transformers import pipeline
-
-
-from sklearn.decomposition import LatentDirichletAllocation
-
-from random import randint
-from pickle import load
-import random
-
-from keras.models import load_model
-from keras.preprocessing.sequence import pad_sequences
-from keras.preprocessing.text import Tokenizer
-
-import keras
-from keras.models import Sequential
-from keras.layers import Dense,LSTM,Embedding
-from tensorflow.keras.utils import to_categorical
-from pickle import dump,load
 
 ## Switch off warnings
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -52,19 +20,16 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 # Import data
 # -------------
 
-#path = "C:/Users/Amy/Desktop/DSI/Module3/"
-#df_twitter = pd.read_csv(path+'streamlit_data.csv')
-
-
+# Load twitter data
 path = os.path.dirname(__file__)
 df_twitter = pd.read_csv(path+'/streamlit_data.csv')
 
 ## drop missing data
-
 df_twitter = df_twitter[df_twitter['date'].notnull()]
 
 ## Convert date feature
 df_twitter['date'] = pd.to_datetime(df_twitter['date']).dt.date
+
 #Add sidebar to the app
 ## Create sidebar for filtering regions
 st.sidebar.header("Date Filter")
@@ -74,55 +39,51 @@ options = df_twitter['date'].unique(),
 default = df_twitter['date'].unique())
 
 ## Filter dataframe by selected dates
-
 df_twitter = df_twitter[df_twitter["date"].isin(dates)]
+
+## Add side menu
+## Add links to other pages/ features
+st.sidebar.write("Additional Features:")
+st.sidebar.write("[Home Page](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Home_Page/app.py)")
+st.sidebar.write("[Emotions WordCloud](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Emotion_Cloud/app.py)")
+st.sidebar.write("[Topic Model Visualization](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Modeling_Visualization/app.py)")
+st.sidebar.write("[Topic WordCloud](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Cloud/app.py)")
+st.sidebar.write("[Text Generation](https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Text_generation/app.py)")
  
 #Add title and subtitle to the main interface of the app
-st.title("Our app name")
-
-# # -------------- 
-# # Word cloud
-# # -------------- 
-
-
-
-wcloud = st.container()
-with wcloud:
-  #Create two columns/filters
-  #col1, col2 = st.columns(2)
-    
-  #with col1:
-  st.subheader("What's Trending")
-  st.markdown("The word cloud below displays words that appear most frequently in the trending tweets. The importance of words is shown with font size or color ")
-  all_words = ' '.join(twts for twts in df_twitter['cleaned_tweet'])
-
-  text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(all_words)
-
-  plt.figure(figsize=(10,8))
-  plt.title('All Tweets Wordcloud')
-  plt.imshow(text_cloud,interpolation='bilinear')
-  plt.axis('off')
-  plt.show()
-  st.pyplot()
-    
-    # with col2:
-    #     st.subheader("Wordcloud Description.")
-    #     st.markdown("This word cloud displays words that appear more frequently in the tweets. The importance of words is shown with font size or color ")
+st.title("Scoop Finder")
 
 # -------------- 
-# Senitiment analysis
+# Helper functions to display plotly gauge
 # -------------- 
 
-def create_gauge_pol(value,title="Average Polarity"):
+def create_gauge_pol(value=0,title="Average Polarity"):
+    """
+    Function that returns a Plotly gauge indicating a value of parameter "value"
+    which corresponds to an average polatiry (number between -1 and 1).
+    
+    Parameters
+    ---------
+    value   float, default 0
+        value to be indicated by gauge
+    title   string, default "Average Polarity"
+        Title of gauge
+    
+    Return
+    -------
+    fig     plotly figure
+        figure of gauge
+    """
     
     fig = go.Figure(
         go.Indicator(
             mode = "gauge+number",
             value = value,
+            number = {'valueformat':'.2f'},
             domain = {'x': [0, 1], 'y': [0, 1]},
             title = {'text': title, 'font': {'size': 24}},
             gauge = {
-                'axis': {'range': [-1,1], 'tickwidth': 1, 'tickcolor': "white"},
+                'axis': {'range': [-1,1], 'tickwidth': 1},
                 'bar': {'color': "darkblue"},
                 'bgcolor': "white",
                 'borderwidth': 2,
@@ -136,6 +97,7 @@ def create_gauge_pol(value,title="Average Polarity"):
                     'thickness': 0.75,
                     'value': value}}
             ),
+        
         go.Layout(margin=go.layout.Margin(
                                 l=20, #left margin
                                 r=20, #right margin
@@ -145,18 +107,36 @@ def create_gauge_pol(value,title="Average Polarity"):
             )
         )
     
-    fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'color': "white", 'family': "Arial"})
+
+    fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'family': "Arial"})
     return fig
 
-def create_gauge_sub(value, title="Average Subjectivity"):
+def create_gauge_sub(value=0, title="Average Subjectivity"):
+    """
+    Function that returns a Plotly gauge indicating a value of parameter "value"
+    which corresponds to an average subjectivity (number between 0 and 1).
+    
+    Parameters
+    ---------
+    value   float, default 0
+        value to be indicated by gauge
+    title   string, default "Average Subkectiivity"
+        Title of gauge
+    
+    Return
+    -------
+    fig     plotly figure
+        figure of gauge
+    """
     fig = go.Figure(
         go.Indicator(
             mode = "gauge+number",
-            value = np.round(value*100)/100,
+            value = value,
+            number = {'valueformat':'.2f'},
             domain = {'x': [0, 1], 'y': [0, 1]},
             title = {'text': title, 'font': {'size': 24}},
             gauge = {
-                'axis': {'range': [0,1], 'tickwidth': 1, 'tickcolor': "white"},
+                'axis': {'range': [0,1], 'tickwidth': 1},
                 'bar': {'color': "darkblue"},
                 'bgcolor': "white",
                 'borderwidth': 2,
@@ -178,41 +158,103 @@ def create_gauge_sub(value, title="Average Subjectivity"):
                 )
             )
     
-    fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'color': "white", 'family': "Arial"})
+    fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'family': "Arial"})
     
     return fig
 
+# -------------- 
+# Senitiment analysis: Gauges
+# -------------- 
+
 st.markdown("## Sentiment analysis")
-st.markdown("The sentiment of a text can be either negative, neutral or positive. A measure of this is polarity. Polarity is a number between -1 and 1, where -1 corresponds to a highly negative sentiment, while +1 corresponds to a highly positive sentiment. ")
-st.markdown("Subjectivity is judgment based on individual personal impressions and feelings and opinions rather than external facts. Here we also measure the subjectivity with 0 corresponding to highly factual statements, while highly emotional texts are scored with +1.")
+
+# Hidden text that can be expanded to show explaination
+with st.expander("See explanation"):
+    st.markdown("The sentiment of a text can be either negative, neutral or positive. A measure of this is polarity. Polarity is a number between -1 and 1, where -1 corresponds to a highly negative sentiment, while +1 corresponds to a highly positive sentiment. ")
+    st.markdown("Subjectivity is judgment based on individual personal impressions and feelings and opinions rather than external facts. Here we also measure the subjectivity with 0 corresponding to highly factual statements, while highly emotional texts are scored with +1.")
+
+
 sentiment = st.container()
 with sentiment:
-    #Create three columns/filters
+    #Create two columns
     col1, col2 = st.columns(2)
     
+    # Display cuctomer text depending on average polarity
     with col1:
-        #st.markdown("### Polarity")
-        
         polarity_value = df_twitter['polarity'].mean()
-        st.plotly_chart(create_gauge_pol(polarity_value), use_container_width=True)
         
-        
+        if polarity_value >= 0:
+            if polarity_value > 0.5:
+                st.markdown('### Strong positive sentiment')
+                st.markdown('On average tweets reflect an enthusiastic, happy or excited mood.')
+            else:
+                st.markdown('### Weak positive sentiment')
+                st.markdown('On average tweets reflect a slightly enthusiastic, happy or excited mood.')
+        else:
+            if polarity_value < 0:
+                if polarity_value < -0.5:
+                    st.markdown('### Strong negative sentiment')
+                    st.markdown('On average tweets reflect a pessimistic, unfavorable or uphappy mood.')
+                else:
+                    st.markdown('### Weak negative sentiment')
+                    st.markdown('On average tweets reflect a slightly pessimistic, unfavorable or uphappy mood.')
 
+    # Display cuctomer text depending on average subjectivity
     with col2:
-        #st.markdown("### Subjectivity")
         
         subjectivity_value =  df_twitter['subjectivity'].mean()
+        
+        if subjectivity_value >= 0.25:
+            if polarity_value > 0.75:
+                st.markdown('### Strongly subjective')
+                st.markdown('On average tweets are very subjective.')
+            else:
+                st.markdown('### Weakly subjective')
+                st.markdown('On average tweets are somewhat subjetive.')
+        else:
+            if subjectivity_value < 0.5:
+                if polarity_value < 0.25:
+                    st.markdown('### Factual')
+                    st.markdown('On average tweets are strongly factual.')
+                else:
+                    st.markdown('### Somewhat factual')
+                    st.markdown('On average tweets are factual but include some subjectivity.')
+         
+    # Display gauges
+    col1, col2 = st.columns(2)
+    with col1:   
+        st.plotly_chart(create_gauge_pol(polarity_value), use_container_width=True)
+        
+    with col2:           
         st.plotly_chart(create_gauge_sub(subjectivity_value), use_container_width=True)
     
-    st.markdown("### Polarity distribution")
-    st.markdown("The figure below shows the distribution of tweets across the polarity spectrum. ")
+# -------------- 
+# Senitiment analysis: distributions
+# -------------- 
+
+
+st.markdown("### Polarity distribution")
+st.markdown("The figure below shows the distribution of tweets across the polarity spectrum. ")
+# Hidden text that can be expanded to show explaination
+with st.expander("See explanation"):
+    st.markdown("Polarity is a number between -1 and 1. A sentiment becomes more negative as the polarity moves from 0 to -1 with -1 corresponding to a highly negative sentiment. The sentiment decomes more positive as the polarity moves from 0 towords +1 with +1 corresponding to a highly positive sentiment. ")
+
+## Polarity distribution plot
+polarity = st.container()
+with polarity:
     fig = ff.create_distplot([df_twitter['polarity'].to_list()],
                              ['Polarity'],
+                             #colors=['white'],
                              show_rug=False,
                              bin_size=.1
                              )
     
     fig.update(layout_showlegend=False)
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(showgrid=False)
+    fig.update_layout(
+    xaxis_title="Polarity",
+    yaxis_title="Frequecy")
     
     arrow_green = Image.open(path+"/arrow_green.png")
     fig.add_layout_image(
@@ -220,7 +262,7 @@ with sentiment:
             source=arrow_green,
             xref="x",
             yref="y",
-            x=0.5,
+            x=0.35,
             y=3,
             sizex=1,
             sizey=1.5,
@@ -247,11 +289,19 @@ with sentiment:
     st.plotly_chart(fig, use_container_width=True)
     
     
-    
-    st.markdown("### Subjectivity distibution")
-    st.markdown("The figure below shows the distribution of tweets across the subjectivity spectrum. ")
+## Subjectivity distribution plot  
+st.markdown("### Subjectivity distibution")
+st.markdown("The figure below shows the distribution of tweets across the subjectivity spectrum. ")
+
+# Hidden text that can be expanded to show explaination
+with st.expander("See explanation"):
+    st.markdown("With the subjectivity measure, 0 corresponds to highly factual statements i.e a sentiment is more objective, while highly emotional texts are scored with +1 which means the sentiment is more subjective based on the individual emotions.")
+
+subjectivity = st.container()
+with subjectivity:
     fig = ff.create_distplot([df_twitter['subjectivity'].to_list()],
                              ['Subjectivity'],
+                             #colors=['white'],
                              show_rug=False,
                              bin_size=.05
                              )
@@ -271,151 +321,54 @@ with sentiment:
             layer="below")
     )
     
+    arrow_green = Image.open(path+"/arrow_green_flip.png")
+    fig.add_layout_image(
+        dict(
+            source=arrow_green,
+            xref="x",
+            yref="y",
+            x=0.1,
+            y=6,
+            sizex=3,
+            sizey=3,
+            sizing="contain",
+            opacity=0.5,
+            layer="below")
+    )
+    
+    fig.update_layout(
+    xaxis_title="Subjectivity",
+    yaxis_title="Frequecy")
     fig.update(layout_showlegend=False)
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(showgrid=False)
     st.plotly_chart(fig, use_container_width=True)
 
 # -------------- 
-# Emotions
+# Top 10 Emotions
 # -------------- 
 
-
+## Prepared twitter data
 clean_data_neutraless = df_twitter[df_twitter['emotion_label'] != 'neutral']
-descending_order = clean_data_neutraless['emotion_label'].value_counts().sort_values(ascending=False).index[:10]
-    
+df_emotion = clean_data_neutraless['emotion_label'].value_counts().sort_values()
+df_emotion = pd.DataFrame(df_emotion,columns=['emotion_label','count'])
+df_emotion.reset_index(inplace=True)
+
+## Load descriptions of emotions from emotions.txt file
+df_descriptions = pd.read_csv(path+'/emotions.txt', sep=';')
+df_new = pd.merge(df_emotion, df_descriptions, on ='index', how ="outer")
+
 
 emotions = st.container()
 with emotions: 
     st.markdown("## The top 10 Emotion")
-    st.markdown("Description ...")
+    st.markdown("This bar graph shows the top 10 most common emotions detected in the tweets from the chosen date range.")
     
-    fig = plt.figure(figsize=(10, 8))
-    sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
-    st.pyplot(fig)
-       
-
-emotion_cloud = st.container()
-with emotion_cloud:
-    #wordcloud plot
-    st.markdown("## Emotion wordcloud")
-    #drop down
-    data_neutraless = df_twitter[df_twitter["sentiment_class"] != "neutral"] #droping the neutral class
-    emotion = [st.selectbox( "Emotion", data_neutraless["sentiment_class"].unique())]  
-    #filtered data
-    df_emotion = data_neutraless[data_neutraless["sentiment_class"].isin(emotion)]
-    
-    all_words = ' '.join(twts for twts in df_emotion['cleaned_tweet'])
-
-    text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(all_words)
-
-    fig = plt.figure(figsize=(10,8))
-    plt.imshow(text_cloud,interpolation='bilinear')
-    plt.axis('off')
-    st.pyplot(fig)
-        
-# -------------- 
-# Topic modeling
-# -------------- 
-        
-st.markdown("## Currently treading topics")
-
-
-number_of_topics = st.slider('Number of topics', min_value=1, max_value=5, value=3, step=1)
-## create vocabulary
-
-cv = CountVectorizer(max_df=0.9,min_df=5,stop_words='english')
-
-## Create Document term matrix
-dtm = cv.fit_transform(df_twitter['cleaned_tweet'])
-
-
-## Initialize number of topics
-rand_topics = number_of_topics
-
-## Create model instance
-LDA = LatentDirichletAllocation(n_components=rand_topics,random_state=42)
-
-## Fit model instance
-LDA.fit(dtm)
-
-
-## Attach topics to original dataset
-
-topic_results = LDA.transform(dtm)
-
-df_twitter['topic'] = topic_results.argmax(axis=1)
-
-
-topic_wcloud = st.container()
-with topic_wcloud:
-
-  st.markdown("### Word Frequency by Topics")
-
-  st.write("The lists below display the top 15 words for each topic modeled. The lists of words are utilized to label the discovered topics.")
-
-
-  word_count = 15
-
-  for i,topic in enumerate(LDA.components_):
-    st.write("The top  {word_count} word for topic # {i} are:".format(word_count=word_count,i=i))
-    st.write(" ")
-    st.write(str([cv.get_feature_names()[index] for index in topic.argsort()[-word_count:]]))
-    #st.write(print('\n'))
-    #st.write(print('\n'))
-  
-  st.markdown("### Topic Word Cloud")
-  st.write('Select topic from drop down menu below to visualize the most frequent words for the selected topic.')
-  wordcloud_topic = st.selectbox("Topic for wordcloud",options=df_twitter['topic'].unique(),index=df_twitter['topic'].min())
-
-  topic_data = df_twitter[df_twitter['topic']==wordcloud_topic]
-
-  topic_words = ' '.join(twts for twts in topic_data['cleaned_tweet'])
-
-  text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(topic_words)
-
-  plt.figure(figsize=(10,8))
-  plt.title('Topic Wordcloud')
-  plt.imshow(text_cloud,interpolation='bilinear')
-  plt.axis('off')
-  plt.show()
-  st.pyplot()
-
-         
-st.markdown("## pyLDA visualisation")
-pyLDA_vis = st.container()
-with pyLDA_vis:
-
-    st.write("The interactive visualization below helps in interprating the topics discovered by the model fit on the trending tweets data. Click on a topic to visualize the topics word composition and distribution.")
-      
-    html_string = pyLDAvis.prepared_data_to_html(pyLDAvis.sklearn.prepare(LDA, dtm, cv))
-
-    components.v1.html(html_string, width=1300, height=800, scrolling=True)           
-
-
-# -------------- 
-# Text generation
-# -------------- 
-
-st.markdown("## Text generation")
-textgen = st.container()
-with textgen:
-
-  st.write("The section below uses transformers (deep learning models) to generate text for a specified topic of interest. Based on the discovered topics from the topic model, input seed text in the text box below to auto-generate an article.")
-
-  ## Text box for user input (seed text)
-  user_input = st.text_input("Input Seed Text","Trending topic")
-
-  ## Slider to select number of words to be generated
-  st.write("Select minimum word count on slider below.")
-  article_min_word_count = st.slider('Article minimum word count', min_value=0, max_value=1000, value=200, step=50)
-  
-
-  if st.button('Generate text'):
-
-    ## Import generatot
-    generator = pipeline('text-generation', model='gpt2')
-
-    ## Generate text
-    text = generator(user_input, do_sample=True, min_length=article_min_word_count)
-
-    ## Print text
-    st.write(text[0]['generated_text'])
+    ## Show bar graph
+    fig = px.bar(df_new.iloc[0:10], y='index', x='emotion_label',
+             hover_data=['description'], color='emotion_label',
+             orientation='h',
+             labels={'emotion_label':'Count','index':'Emotions','description':'Description'}, height=400)
+    fig.update(layout_coloraxis_showscale=False)
+    fig.update_xaxes(showgrid=False)
+    st.plotly_chart(fig, use_container_width=True)

@@ -1,0 +1,28 @@
+index;description
+relief;  The easing of a pain, distress, or anxiety.
+nervousness; Great mental and physical unrest.
+pride; A sense of one's own proper dignity or value.
+embarrassment; The state of being disconcerted or abashed.
+remorse; Moral anguish arising from repentance for past misdeeds.
+grief;  Deep and poignant distress caused by or as if by bereavement.
+disgust; To excite nausea or loathing in.
+annoyance; A cause of irritation or vexation.
+amusement; Something that amuses, entertains, or pleases.
+fear; A feeling of disquiet or apprehension.
+anger;  A strong feeling of displeasure or hostility.
+love; A strong feeling of affection and concern toward another person.
+desire; To wish or long for.
+surprise; To cause to feel wonder, astonishment, or amazement, as at something unanticipated.
+confusion; Impaired orientation with respect to time, place, or person.
+disappointment; Thwarted in hope, desire, or expectation.
+optimism; A tendency to expect the best possible outcome or dwell on the most hopeful aspects of a situation.
+realization; A bringing or coming into real existence or manifestation, as of something conceived or imagined.
+disapproval; To have an unfavorable opinion of someone or something.
+gratitude; The state or quality of being thankful.
+sadness; Showing, expressing, or feeling sorrow or unhappiness.
+curiosity; A desire to know or learn.
+excitement;  Emotionally aroused or stirred.
+joy; Intense and especially ecstatic or exultant happiness.
+caring; Feeling and exhibiting concern and empathy for others.
+admiration; A feeling of strong approval or delight with regard to someone or something.
+approval; Favorable regard or commendation.

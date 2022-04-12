@@ -1,0 +1,14 @@
+streamlit
+plotly
+pandas
+numpy
+seaborn
+wordcloud
+matplotlib
+sklearn
+pyLDAvis
+transformers
+
+keras
+tensorflow
+
