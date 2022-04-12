@@ -121,7 +121,7 @@ with topic_wcloud:
     
     topic_data = df_twitter[df_twitter['topic']==wordcloud_topic]
   
-    topic_words = ' '.join(twts for twts in topic_data['cleaned_tweet'])
+    topic_words = ' '.join(str(twts) for twts in topic_data['cleaned_tweet'])
   
     text_cloud = wordcloud.WordCloud(height=300,width=500,random_state=10,max_font_size=110).generate(topic_words)
   
