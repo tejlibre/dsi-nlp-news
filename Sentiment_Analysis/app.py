@@ -20,19 +20,16 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 # Import data
 # -------------
 
-#path = "C:/Users/Amy/Desktop/DSI/Module3/"
-#df_twitter = pd.read_csv(path+'streamlit_data.csv')
-
-
+# Load twitter data
 path = os.path.dirname(__file__)
 df_twitter = pd.read_csv(path+'/streamlit_data.csv')
 
 ## drop missing data
-
 df_twitter = df_twitter[df_twitter['date'].notnull()]
 
 ## Convert date feature
 df_twitter['date'] = pd.to_datetime(df_twitter['date']).dt.date
+
 #Add sidebar to the app
 ## Create sidebar for filtering regions
 st.sidebar.header("Date Filter")
@@ -42,7 +39,6 @@ options = df_twitter['date'].unique(),
 default = df_twitter['date'].unique())
 
 ## Filter dataframe by selected dates
-
 df_twitter = df_twitter[df_twitter["date"].isin(dates)]
 
 ## Add side menu
@@ -58,10 +54,27 @@ st.sidebar.write("[Text Generation](https://share.streamlit.io/tejlibre/dsi-nlp-
 st.title("Scoop Finder")
 
 # -------------- 
-# Senitiment analysis
+# Helper functions to display plotly gauge
 # -------------- 
 
-def create_gauge_pol(value,title="Average Polarity"):
+def create_gauge_pol(value=0,title="Average Polarity"):
+    """
+    Function that returns a Plotly gauge indicating a value of parameter "value"
+    which corresponds to an average polatiry (number between -1 and 1).
+    
+    Parameters
+    ---------
+    value   float, default 0
+        value to be indicated by gauge
+    title   string, default "Average Polarity"
+        Title of gauge
+    
+    Return
+    -------
+    fig     plotly figure
+        figure of gauge
+    """
+    
     fig = go.Figure(
         go.Indicator(
             mode = "gauge+number",
@@ -98,7 +111,23 @@ def create_gauge_pol(value,title="Average Polarity"):
     fig.update_layout(paper_bgcolor = "rgba(0,0,0,0)", font = {'family': "Arial"})
     return fig
 
-def create_gauge_sub(value, title="Average Subjectivity"):
+def create_gauge_sub(value=0, title="Average Subjectivity"):
+    """
+    Function that returns a Plotly gauge indicating a value of parameter "value"
+    which corresponds to an average subjectivity (number between 0 and 1).
+    
+    Parameters
+    ---------
+    value   float, default 0
+        value to be indicated by gauge
+    title   string, default "Average Subkectiivity"
+        Title of gauge
+    
+    Return
+    -------
+    fig     plotly figure
+        figure of gauge
+    """
     fig = go.Figure(
         go.Indicator(
             mode = "gauge+number",
@@ -133,18 +162,25 @@ def create_gauge_sub(value, title="Average Subjectivity"):
     
     return fig
 
+# -------------- 
+# Senitiment analysis: Gauges
+# -------------- 
+
 st.markdown("## Sentiment analysis")
+
+# Hidden text that can be expanded to show explaination
 with st.expander("See explanation"):
     st.markdown("The sentiment of a text can be either negative, neutral or positive. A measure of this is polarity. Polarity is a number between -1 and 1, where -1 corresponds to a highly negative sentiment, while +1 corresponds to a highly positive sentiment. ")
     st.markdown("Subjectivity is judgment based on individual personal impressions and feelings and opinions rather than external facts. Here we also measure the subjectivity with 0 corresponding to highly factual statements, while highly emotional texts are scored with +1.")
+
+
 sentiment = st.container()
 with sentiment:
-    #Create three columns/filters
+    #Create two columns
     col1, col2 = st.columns(2)
     
+    # Display cuctomer text depending on average polarity
     with col1:
-        #st.markdown("### Polarity")
-        
         polarity_value = df_twitter['polarity'].mean()
         
         if polarity_value >= 0:
@@ -163,9 +199,8 @@ with sentiment:
                     st.markdown('### Weak negative sentiment')
                     st.markdown('On average tweets reflect a slightly pessimistic, unfavorable or uphappy mood.')
 
-
+    # Display cuctomer text depending on average subjectivity
     with col2:
-        #st.markdown("### Subjectivity")
         
         subjectivity_value =  df_twitter['subjectivity'].mean()
         
@@ -185,7 +220,7 @@ with sentiment:
                     st.markdown('### Somewhat factual')
                     st.markdown('On average tweets are factual but include some subjectivity.')
          
-        
+    # Display gauges
     col1, col2 = st.columns(2)
     with col1:   
         st.plotly_chart(create_gauge_pol(polarity_value), use_container_width=True)
@@ -193,12 +228,18 @@ with sentiment:
     with col2:           
         st.plotly_chart(create_gauge_sub(subjectivity_value), use_container_width=True)
     
-      
+# -------------- 
+# Senitiment analysis: distributions
+# -------------- 
+
+
 st.markdown("### Polarity distribution")
 st.markdown("The figure below shows the distribution of tweets across the polarity spectrum. ")
+# Hidden text that can be expanded to show explaination
 with st.expander("See explanation"):
     st.markdown("Polarity is a number between -1 and 1. A sentiment becomes more negative as the polarity moves from 0 to -1 with -1 corresponding to a highly negative sentiment. The sentiment decomes more positive as the polarity moves from 0 towords +1 with +1 corresponding to a highly positive sentiment. ")
-    
+
+## Polarity distribution plot
 polarity = st.container()
 with polarity:
     fig = ff.create_distplot([df_twitter['polarity'].to_list()],
@@ -248,12 +289,14 @@ with polarity:
     st.plotly_chart(fig, use_container_width=True)
     
     
-    
+## Subjectivity distribution plot  
 st.markdown("### Subjectivity distibution")
 st.markdown("The figure below shows the distribution of tweets across the subjectivity spectrum. ")
+
+# Hidden text that can be expanded to show explaination
 with st.expander("See explanation"):
     st.markdown("With the subjectivity measure, 0 corresponds to highly factual statements i.e a sentiment is more objective, while highly emotional texts are scored with +1 which means the sentiment is more subjective based on the individual emotions.")
-    
+
 subjectivity = st.container()
 with subjectivity:
     fig = ff.create_distplot([df_twitter['subjectivity'].to_list()],
@@ -302,27 +345,26 @@ with subjectivity:
     st.plotly_chart(fig, use_container_width=True)
 
 # -------------- 
-# Emotions
+# Top 10 Emotions
 # -------------- 
 
-
+## Prepared twitter data
 clean_data_neutraless = df_twitter[df_twitter['emotion_label'] != 'neutral']
 df_emotion = clean_data_neutraless['emotion_label'].value_counts().sort_values()
 df_emotion = pd.DataFrame(df_emotion,columns=['emotion_label','count'])
 df_emotion.reset_index(inplace=True)
 
+## Load descriptions of emotions from emotions.txt file
 df_descriptions = pd.read_csv(path+'/emotions.txt', sep=';')
 df_new = pd.merge(df_emotion, df_descriptions, on ='index', how ="outer")
+
 
 emotions = st.container()
 with emotions: 
     st.markdown("## The top 10 Emotion")
     st.markdown("This bar graph shows the top 10 most common emotions detected in the tweets from the chosen date range.")
     
-    #fig = plt.figure(figsize=(10, 8))
-    #sns.countplot(data=clean_data_neutraless,y='emotion_label',order=descending_order)
-    #st.pyplot(fig)
-    
+    ## Show bar graph
     fig = px.bar(df_new.iloc[0:10], y='index', x='emotion_label',
              hover_data=['description'], color='emotion_label',
              orientation='h',
