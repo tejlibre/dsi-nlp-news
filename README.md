@@ -19,6 +19,13 @@ Bellow are the links to the different apps that make up the "Scoop finder" proje
 | Topic cloud |    https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Cloud/app.py|
 |  Text generation |  https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Text_generation/app.py |
 
+The folder structure for the above files is:
+
+- app.py : Main python script that powers streamlit application.
+- requirements.txt : A text file with python libraries and dependencies.
+- streamlit_data.csv : Twitter harvested dataset.
+- Other support files e.g images and illustrations.
+
 ## Overview
 Below we provide and overview of the different features of our app. 
 
