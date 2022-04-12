@@ -27,12 +27,15 @@ Below we provide and overview of the different features of our app.
 ### Emotion cloud
 
 ### Topic modeling visualisation
+In this section of the app we find an overview of currently trending topics. The pyLADvis plot is in an interactive plot that allows the user to see and overview of the topics found using Latent Dirichlet Allocation (LDA). The user is also able to adjust the number of topics which is a hyperparameter of the LDA model.
 
 ### Topic cloud
+In this section of the app we find details of the currently trending topics. Using LDA the top 15 words associated with each topic are determined and displayed. Below this the wordcloud of the selected topic is displayed.
+
 
 ### Text generation
 
 ## Report
-I detailed report on there different aspects of this project can be found [here](https://github.com/tejlibre/dsi-nlp-news/blob/dev/Notebooks/Final%20Report.ipynb). Additonal supporting notebooks are also refered to in this report and can be found in the [notebooks](https://github.com/tejlibre/dsi-nlp-news/tree/dev/Notebooks) folder. 
+I detailed report on there different aspects of this project can be found [here](https://github.com/tejlibre/dsi-nlp-news/blob/dev/Notebooks/Final%20Report.ipynb). Additonal supporting notebooks are also refered to in this report and can be found in the [notebooks folder](https://github.com/tejlibre/dsi-nlp-news/tree/dev/Notebooks). 
 
 ## Usage
