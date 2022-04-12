@@ -12,12 +12,12 @@ Bellow are the links to the different apps that make up the "Scoop finder" proje
 
 | App Description | Link |
 |---|---|
-| Home page | https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Home_Page/app.py |
-| Sentiment Analysis |   https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Sentiment_Analysis/app.py |
-| Emotion Cloud |   https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Emotion_Cloud/app.py |
-| Topic modeling visualisation |   https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Modeling_Visualization/app.py |
-| Topic cloud |    https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Topic_Cloud/app.py|
-|  Text generation |  https://share.streamlit.io/tejlibre/dsi-nlp-news/dev/Text_generation/app.py |
+| Home page | https://share.streamlit.io/tejlibre/dsi-nlp-news/main/Home_Page/app.py |
+| Sentiment Analysis |   https://share.streamlit.io/tejlibre/dsi-nlp-news/main/Sentiment_Analysis/app.py |
+| Emotion Cloud |   https://share.streamlit.io/tejlibre/dsi-nlp-news/main/Emotion_Cloud/app.py |
+| Topic modeling visualisation |   https://share.streamlit.io/tejlibre/dsi-nlp-news/main/Topic_Modeling_Visualization/app.py |
+| Topic cloud |    https://share.streamlit.io/tejlibre/dsi-nlp-news/main/Topic_Cloud/app.py|
+|  Text generation |  https://share.streamlit.io/tejlibre/dsi-nlp-news/main/Text_generation/app.py |
 
 The folder structure for the above repositories is:
 
@@ -31,7 +31,11 @@ Below we provide and overview of the different features of our app.
 
 ### Sentiment analysis
 
+In this section of the app we aim to get a feel of how positively or negatively the authors of the tweets feel about particular subject matters. We will display word clouds for the negative and positive sentiments and discover what words are salient on the positive and negative word clouds. We will also measure how subjective or factual the tweets are and display distribution graphs for the polarity and subjectivity scores. The TextBlob library frpm python will be utilized for this task.
+
 ### Emotion cloud
+
+In this section of the app, we tease out the emotions tweet authors have on the trending matters. We will utilize transformer models from the hugging face API to detect the emotions. For a particular date range we will visualize the top 10 dominant emotions.
 
 ### Topic modeling visualisation
 In this section of the app we find an overview of currently trending topics. The pyLADvis plot is in an interactive plot that allows the user to see and overview of the topics found using Latent Dirichlet Allocation (LDA). The user is also able to adjust the number of topics which is a hyperparameter of the LDA model.
