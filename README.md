@@ -49,6 +49,6 @@ In this section of the app we find details of the currently trending topics. Usi
 In this section of the app we feed seed text to a transformer model GPT2 from the hugging face API. The seed text is based on discovered topics and themes from the twitter data.
 
 ## Report
-I detailed report on there different aspects of this project can be found [here](https://github.com/tejlibre/dsi-nlp-news/blob/dev/Notebooks/Final%20Report.ipynb). Additonal supporting notebooks are also refered to in this report and can be found in the [notebooks folder](https://github.com/tejlibre/dsi-nlp-news/tree/dev/Notebooks). 
+I detailed report on there different aspects of this project can be found [here](https://github.com/tejlibre/dsi-nlp-news/blob/main/Notebooks/Final%20Report.ipynb). Additonal supporting notebooks are also refered to in this report and can be found in the [notebooks folder](https://github.com/tejlibre/dsi-nlp-news/tree/main/Notebooks). 
 
 ## Usage
