@@ -51,4 +51,3 @@ In this section of the app we feed seed text to a transformer model GPT2 from th
 ## Report
 I detailed report on there different aspects of this project can be found [here](https://github.com/tejlibre/dsi-nlp-news/blob/main/Notebooks/Final%20Report.ipynb). Additonal supporting notebooks are also refered to in this report and can be found in the [notebooks folder](https://github.com/tejlibre/dsi-nlp-news/tree/main/Notebooks). 
 
-## Usage
